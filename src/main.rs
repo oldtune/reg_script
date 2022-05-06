@@ -4,23 +4,27 @@ use crate::custom_error::CustomError;
 pub mod custom_error;
 #[tokio::main]
 async fn main() -> Result<()> {
-    let first_parameter: i32 = std::env::args()
-        .nth(1)
-        .expect("sai roi, dung nhu nay ne reg 1 100")
-        .parse()
-        .expect("dung so thoi");
-    let second_parameter: i32 = std::env::args()
-        .nth(2)
-        .expect("sai roi, dung nhu vay ne: reg 1 100")
-        .parse()
-        .expect("truyen so thoi");
+    let std_in = std::io::stdin();
+    println!("Nhap so bat dau: ");
+    let mut first_parameter: String = "".into();
+    std_in
+        .read_line(&mut first_parameter)
+        .expect("sai roi, nhap so thoi");
+    let first_parameter: i32 = first_parameter.trim().parse().expect("nhap so thoi");
+
+    let mut second_parameter: String = "".into();
+    println!("Nhap so ket thuc: ");
+    std_in
+        .read_line(&mut second_parameter)
+        .expect("nhap so thoi");
+    let second_parameter: i32 = second_parameter.trim().parse().expect("nhap so thoi");
 
     let client = reqwest::Client::new();
     for i in first_parameter..second_parameter {
-        println!("creating account for {}", i);
+        println!("Tao account id {}", i);
         let result = create_account(&client, i).await;
         if result.is_err() {
-            println!("Failed for id {}", result.unwrap_err());
+            println!("That bai id {}", result.unwrap_err());
         }
     }
 
